@@ -1,12 +1,4 @@
-import os
 from rec.RecModel import RecModel
-import torch
-from addict import Dict as AttrDict
-import cv2
-import numpy as np
-import math
-import time
-import os
 from det.DetModel import DetModel
 import torch
 from addict import Dict as AttrDict
@@ -327,7 +319,7 @@ def img_nchw(img):
     return img_np
 
 
-def infer_det(image, img0, threshold=0.5):
+def infer_det(image, img0, threshold=0.3):
     det_model, post_proess = get_det_model()
     # img0, img_np_nchw = img_nchw(image)
     # input_for_torch = torch.from_numpy(img_np_nchw)
@@ -343,8 +335,8 @@ def infer_det(image, img0, threshold=0.5):
     else:
         box_list, score_list = [], []
     img1 = draw_bbox(img0, box_list)
-    cv2.imshow("draw", img1)
-    cv2.waitKey()
+    # cv2.imshow("draw", img1)
+    # cv2.waitKey()
     results = []
     index = 0
     for points in box_list:
@@ -353,7 +345,7 @@ def infer_det(image, img0, threshold=0.5):
         result_img = get_rotate_crop_image(img0, points)
         results.append(result_img)
         index += 1
-    return results
+    return results,img1
 
 
 def get_dict():
@@ -451,10 +443,10 @@ def infer_rec(img_tensor):
 def infer_det_rec(path):
     img = cv2.imread(path)
     imgs1, img0 = imgs2tensors(img)
-    imgs2 = infer_det(imgs1, img0)
+    imgs2,img_det = infer_det(imgs1, img0)
     imgs_tensor = imgs2tensors(imgs2)
     result, results = infer_rec(imgs_tensor)
-    return result, results
+    return result, results,img_det
 
 
 def get_same_numbers(s1, s2):
@@ -505,10 +497,14 @@ if __name__ == "__main__":
     path1 = 'test/pdf3.png'
     # path2 = 'test/pdf3.png'
     path2 = 'test/3.jpg'
-    text1, text1_list = infer_det_rec(path1)
-    text2, text2_list = infer_det_rec(path2)
+    text1, text1_list,img_det1 = infer_det_rec(path1)
+    text2, text2_list,img_det2 = infer_det_rec(path2)
+
     get_rouge_socre(text1_list, text2_list)
     get_rouge_socre2(text1, text2)
-    print(get_same_numbers(text1, text2) * 2 / (len(text2) + len(text1)))
+    print('重复字数占比得分',get_same_numbers(text1, text2) * 2 / (len(text2) + len(text1)))
     diff = get_like_score(text1, text2)
     print("相似度得分：", diff)
+    cv2.imshow("draw1", img_det1)
+    cv2.imshow("draw2", img_det2)
+    cv2.waitKey()
