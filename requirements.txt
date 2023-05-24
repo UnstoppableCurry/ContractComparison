@@ -1,0 +1,8 @@
+opencv-python
+opencv-contrib-python
+pytorch
+jieba
+rouge
+numpy
+shapely
+pyclipper
