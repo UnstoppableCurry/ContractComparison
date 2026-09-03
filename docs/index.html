@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>合同比对 · OCR 结果展示 | ContractComparison</title>
+  <meta name="description" content="ContractComparison 的静态走查页。根据仓库 README、源码与已核验素材，说明中文合同 OCR 比对的问题、管线、可见结果与限制。本页无法在浏览器中运行识别。">
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="UnstoppableCurry">
+  <meta name="theme-color" content="#1c1612">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://unstoppablecurry.github.io/ContractComparison/">
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/brand/favicon.svg">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="alternate" hreflang="zh-CN" href="https://unstoppablecurry.github.io/ContractComparison/">
+  <link rel="alternate" hreflang="x-default" href="https://unstoppablecurry.github.io/ContractComparison/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:site_name" content="ContractComparison">
+  <meta property="og:title" content="合同比对 · OCR 结果展示">
+  <meta property="og:description" content="静态走查，不是在线演示。依据 README、源码与仓库素材说明问题、管线、可见结果与限制。">
+  <meta property="og:url" content="https://unstoppablecurry.github.io/ContractComparison/">
+  <meta property="og:image" content="https://unstoppablecurry.github.io/ContractComparison/assets/outputs/readme-detection-windows.png">
+  <meta property="og:image:alt" content="README 发布的检测窗口截图：draw1 与 draw2 上的红色文本框。">
+  <meta property="og:image:width" content="1017">
+  <meta property="og:image:height" content="667">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="合同比对 · OCR 结果展示">
+  <meta name="twitter:description" content="静态走查页。无法在浏览器中运行 OCR。不提供准确率或生产指标。">
+  <meta name="twitter:image" content="https://unstoppablecurry.github.io/ContractComparison/assets/outputs/readme-detection-windows.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "合同比对 · OCR 结果展示",
+    "inLanguage": "zh-CN",
+    "url": "https://unstoppablecurry.github.io/ContractComparison/",
+    "description": "ContractComparison 的静态走查页。根据仓库 README、源码与已核验素材说明问题、管线、可见结果与限制。无法在浏览器中运行 OCR。",
+    "isPartOf": {
+      "@type": "SoftwareSourceCode",
+      "name": "ContractComparison",
+      "description": "Comparison of General Chinese Contracts with OCR Pytorch",
+      "codeRepository": "https://github.com/UnstoppableCurry/ContractComparison",
+      "programmingLanguage": "Python",
+      "runtimePlatform": "PyTorch"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-current="page">
+        <span class="brand-mark">合同比对</span>
+        <span class="brand-sub">ContractComparison</span>
+      </a>
+      <nav class="site-nav" aria-label="本页章节">
+        <a href="#problem">问题</a>
+        <a href="#inputs">输入</a>
+        <a href="#pipeline">管线</a>
+        <a href="#results">结果</a>
+        <a href="#limitations">限制</a>
+        <a href="#local">本地运行</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap crop" aria-labelledby="hero-title">
+      <p class="kicker">静态展示 · 非在线推理</p>
+      <h1 id="hero-title">通用中文合同 OCR 比对</h1>
+      <p class="lede">
+        仓库 README 将项目写作
+        <span lang="en">Comparison of General Chinese Contracts with OCR Pytorch</span>。
+        实现是本地 Python / PyTorch 脚本，不是网页应用。本页只整理仓库里能核对到的问题、管线、样例与已发布截图。
+      </p>
+      <aside class="notice" aria-label="能力边界">
+        <strong>本页不能识别合同，也不会给出准确率。</strong>
+        <p>浏览器无法加载 <code>weights/</code> 中的检测与识别权重，也无法调用 OpenCV 窗口。仓库没有评测集说明，也没有客户、生产或性能数字。下面出现的图，一律标明是<strong>输入样例</strong>还是<strong>仓库已发布的生成结果</strong>。</p>
+      </aside>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#results">查看已发布结果图</a>
+        <a class="btn" href="https://github.com/UnstoppableCurry/ContractComparison">打开 GitHub 仓库</a>
+      </div>
+    </section>
+
+    <section class="section" id="problem" aria-labelledby="problem-title">
+      <div class="wrap">
+        <h2 id="problem-title">问题</h2>
+        <p class="section-en" lang="en">What the repository actually compares</p>
+        <div class="prose">
+          <p>
+            <code>main.py</code> 的默认入口不是交互式审阅工具。它读取两张合同页图像，各自做文本检测与识别，再对识别出的字符串做重叠与相似度计算，并用 OpenCV 弹出两张带检测框的图。
+          </p>
+          <p>
+            仓库 <code>test/</code> 里能核验到的样例，是同一份《河北省广告承揽合同》的第 1 页与第 3 页：
+            <code>.jpg</code> 为纸面照片，<code>.png</code> 为更接近电子稿的渲染。默认要比对的路径写死为第 3 页的这两种成像。
+          </p>
+        </div>
+        <div class="grid-2" style="margin-top:1.2rem">
+          <article class="card">
+            <h3>默认比对对象</h3>
+            <p class="meta">来源：<code>main.py</code> 的 <code>__main__</code></p>
+            <p><code>path1 = 'test/pdf3.png'</code><br><code>path2 = 'test/3.jpg'</code></p>
+          </article>
+          <article class="card">
+            <h3>脚本结束时打印的名目</h3>
+            <p class="meta">来源：同一入口的 <code>print</code> 语句</p>
+            <p><code>rouge1</code> / <code>rouge2</code> / <code>rougeL</code>、<code>重复字数占比得分</code>、<code>相似度得分</code>。本页不转写任何一次运行的数值。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="inputs" aria-labelledby="inputs-title">
+      <div class="wrap">
+        <h2 id="inputs-title">输入样例</h2>
+        <p class="section-en" lang="en">Verified repository assets — not model outputs</p>
+        <p class="prose">
+          以下四张图直接复制自仓库 <code>test/</code>，未经模型处理。红章、透视与底纹是原图就有的，不是后处理叠加。
+        </p>
+
+        <div class="pair">
+          <h3 class="pair-title">第 1 页 · 两种成像</h3>
+          <p class="meta">文件名可在仓库中核对：<code>test/1.jpg</code>、<code>test/pdf1.png</code></p>
+          <div class="grid-2">
+            <figure class="figure-card">
+              <span class="badge badge-input">输入样例</span>
+              <a href="assets/inputs/1.jpg">
+                <img src="assets/inputs/1.jpg" width="1706" height="1280" alt="输入样例 test/1.jpg：纸面拍摄的《河北省广告承揽合同》第 1 页，可见红章与阴影。" decoding="async">
+              </a>
+              <figcaption>照片。<code>test/1.jpg</code>，1706×1280 JPEG。标题为河北省广告承揽合同，页脚为 1。图中有圆形红章压字。</figcaption>
+            </figure>
+            <figure class="figure-card">
+              <span class="badge badge-input">输入样例</span>
+              <a href="assets/inputs/pdf1.png">
+                <img src="assets/inputs/pdf1.png" width="873" height="1193" alt="输入样例 test/pdf1.png：同一合同第 1 页的电子稿渲染，白底、无红章。" decoding="async">
+              </a>
+              <figcaption>电子稿渲染。<code>test/pdf1.png</code>，873×1193 PNG。版式与第 1 页照片对应，无印章、无拍摄阴影。</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="pair">
+          <h3 class="pair-title">第 3 页 · 默认入口实际读取的一对</h3>
+          <p class="meta"><code>main.py</code> 默认比较这一对，而不是第 1 页。</p>
+          <div class="grid-2">
+            <figure class="figure-card">
+              <span class="badge badge-input">输入样例</span>
+              <a href="assets/inputs/3.jpg">
+                <img src="assets/inputs/3.jpg" width="1280" height="1706" alt="输入样例 test/3.jpg：纸面拍摄的合同第 3 页，含第四条违约责任。" decoding="async">
+              </a>
+              <figcaption>照片。<code>test/3.jpg</code>，1280×1706 JPEG。可见条款 5–8 与「第四条 违约责任」。页脚为 3。</figcaption>
+            </figure>
+            <figure class="figure-card">
+              <span class="badge badge-input">输入样例</span>
+              <a href="assets/inputs/pdf3.png">
+                <img src="assets/inputs/pdf3.png" width="923" height="1260" alt="输入样例 test/pdf3.png：同一合同第 3 页的电子稿渲染。" decoding="async">
+              </a>
+              <figcaption>电子稿渲染。<code>test/pdf3.png</code>，923×1260 PNG。与第 3 页照片同一页次，作为默认 <code>path1</code>。</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pipeline" aria-labelledby="pipeline-title">
+      <div class="wrap">
+        <h2 id="pipeline-title">处理管线</h2>
+        <p class="section-en" lang="en">Steps reconstructed from main.py, det/, rec/, and weights/</p>
+        <p class="prose">下列步骤只复述仓库里写明的调用顺序与配置，不是产品说明书。</p>
+        <div class="steps" style="margin-top:1.1rem">
+          <article class="step">
+            <span class="step-num" aria-hidden="true">1</span>
+            <div>
+              <h3>读图</h3>
+              <p><code>infer_det_rec</code> 用 <code>cv2.imread</code> 读入路径。检测前把短边缩放到不超过 640，再按 32 对齐补边，均值/方差均按 0.5 归一化。</p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num" aria-hidden="true">2</span>
+            <div>
+              <h3>文本检测</h3>
+              <p>
+                <code>DetModel</code>：<code>MobileNetV3</code>（large，scale=0.5）+ <code>RSEFPN</code>（96 通道）+ <code>DBHead</code>。
+                权重文件名为 <code>weights/ppv3_db.pth</code>。推理时 <code>DBHead</code> 只返回收缩图。
+                <code>DBPostProcess</code> 默认 <code>thresh=0.3</code>、<code>box_thresh=0.4</code>、<code>max_candidates=1000</code>、<code>unclip_ratio=2</code>。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num" aria-hidden="true">3</span>
+            <div>
+              <h3>裁切与可视化</h3>
+              <p>
+                通过分数阈值的框交给 <code>get_rotate_crop_image</code> 做透视裁切。
+                <code>draw_bbox</code> 用红色折线把框画回原图。这些红框是检测框，源码没有把它们标成条款差异。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num" aria-hidden="true">4</span>
+            <div>
+              <h3>文本识别</h3>
+              <p>
+                裁切图缩到高 48、宽按 32 补齐。
+                <code>RecModel</code>：<code>MobileNetV1Enhance</code>（scale=0.5）+ <code>Multi</code> 头里的 SVTR CTC。
+                <code>n_class=6625</code>。权重为 <code>weights/ppv3_rec.pth</code>。
+                字典为 <code>weights/ppocr_keys_v1.txt</code>（CTC 空白符另计）。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num" aria-hidden="true">5</span>
+            <div>
+              <h3>后处理字符串</h3>
+              <p>
+                <code>CTCLabelConverter.decode</code> 去掉空白与相邻重复索引。
+                拼成整段 <code>result</code> 时会去掉大量中英文标点；按框保存的 <code>results</code> 列表保留解码原文。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num" aria-hidden="true">6</span>
+            <div>
+              <h3>两段文本比对</h3>
+              <p>
+                <code>get_rouge_socre</code> 对两份按框文本列表调用 <code>rouge</code>。
+                <code>get_rouge_socre2</code> 对去标点后的整段做 <code>jieba.cut</code> 再算 ROUGE。
+                <code>get_same_numbers</code> 用第一段字符建字典，再扫第二段，返回字典长度，再按
+                <code>值 * 2 / (len(text1) + len(text2))</code> 打印「重复字数占比得分」。
+                <code>get_like_score</code> 是 <code>difflib.SequenceMatcher.ratio()</code>，打印「相似度得分」。
+                最后 <code>cv2.imshow("draw1" / "draw2")</code>。
+              </p>
+            </div>
+          </article>
+        </div>
+        <aside class="evidence">
+          <p class="meta">依赖清单摘自 <code>requirements.txt</code></p>
+          <p><code>opencv-python</code>、<code>opencv-contrib-python</code>、<code>pytorch</code>、<code>jieba</code>、<code>rouge</code>、<code>numpy</code>、<code>shapely</code>、<code>pyclipper</code>。源码另外使用 <code>addict.Dict</code>。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="results" aria-labelledby="results-title">
+      <div class="wrap">
+        <h2 id="results-title">可见结果</h2>
+        <p class="section-en" lang="en">README-published screenshots — generated outputs, not inputs</p>
+        <p class="prose">
+          README 的 Example 节有两张 GitHub 用户资源图。本页在可访问时已另存副本，避免外链过期。
+          它们是作者发布的运行截图，不是 <code>test/</code> 原图，也不是本页现场跑出来的。
+        </p>
+        <div class="grid-2" style="margin-top:1.2rem">
+          <figure class="figure-card">
+            <span class="badge badge-output">生成结果 · README</span>
+            <a href="assets/outputs/readme-detection-windows.png">
+              <img src="assets/outputs/readme-detection-windows.png" width="1017" height="667" alt="生成结果：README 发布的 OpenCV 窗口截图，标题为 draw2 与 draw1，合同第 3 页上叠有红色检测框。" decoding="async">
+            </a>
+            <figcaption>
+              检测可视化。窗口标题 <code>draw2</code> / <code>draw1</code> 与 <code>main.py</code> 的
+              <code>cv2.imshow</code> 一致。左侧更像 <code>test/3.jpg</code> 的照片，右侧更像 <code>test/pdf3.png</code> 的电子稿。
+              红框由 <code>draw_bbox</code> 画出，表示文本检测区域。该截图里两路框的疏密并不相同；仓库没有解释原因，也没有把它写成评价指标。
+            </figcaption>
+          </figure>
+          <figure class="figure-card">
+            <span class="badge badge-output">生成结果 · README</span>
+            <a href="assets/outputs/readme-console.png">
+              <img src="assets/outputs/readme-console.png" width="1024" height="349" alt="生成结果：README 发布的控制台截图，可见识别文本、jieba 加载与 ROUGE、重复字数占比、相似度等打印项。" decoding="async">
+            </a>
+            <figcaption>
+              控制台截图。能看到识别文本打印、<code>jieba</code> 载入，以及 ROUGE 分项、「重复字数占比得分」「相似度得分」。
+              这些数字只对应该次本地运行。仓库没有评测协议，本页不摘录、不平均、不宣传任何分数。
+            </figcaption>
+          </figure>
+        </div>
+        <div class="card" style="margin-top:1.2rem">
+          <h3>源码保证会输出、但本页无法重跑的内容</h3>
+          <ul>
+            <li>两段识别字符串，以及按检测框切开的字符串列表。</li>
+            <li><code>infer_rec</code> 打印的 <code>txt</code> 与 <code>time</code>。仓库没有给出可引用的耗时统计。</li>
+            <li>两个 OpenCV 窗口中的检测图。浏览器里看不到窗口，只能看 README 那张截图。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="limitations" aria-labelledby="limitations-title">
+      <div class="wrap">
+        <h2 id="limitations-title">限制</h2>
+        <p class="section-en" lang="en">Only constraints visible in the repository</p>
+        <div class="limits">
+          <article class="limit">
+            <h3>不能在浏览器里跑</h3>
+            <p>检测与识别依赖 PyTorch 权重和 OpenCV。GitHub Pages 只托管这套静态 HTML。</p>
+          </article>
+          <article class="limit">
+            <h3>入口写死，需要本机窗口</h3>
+            <p>路径写在 <code>__main__</code> 里。结束时调用 <code>cv2.imshow</code> 与 <code>cv2.waitKey</code>，无桌面界面时看不到那两张检测图。</p>
+          </article>
+          <article class="limit">
+            <h3>比对发生在 OCR 字符串上</h3>
+            <p>没有条款对齐、没有法律审阅视图。去标点后的整段与按框列表会走进不同的计分函数。</p>
+          </article>
+          <article class="limit">
+            <h3>没有官方指标</h3>
+            <p>仓库未提供评测集、未声明准确率、未描述客户或生产部署。README 截图里的分数不能当成项目指标。</p>
+          </article>
+          <article class="limit">
+            <h3>函数名与实现并不一一对应</h3>
+            <p><code>get_same_numbers</code> 并不提取数字；它返回以第一段字符为键的字典长度。打印名「重复字数占比得分」也没有独立定义文档。</p>
+          </article>
+          <article class="limit">
+            <h3>每次调用都重新读权重</h3>
+            <p><code>get_det_model</code> 与 <code>get_rec_model</code> 在推理路径里 <code>torch.load</code>。这是源码结构，不是测出来的性能结论。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="local" aria-labelledby="local-title">
+      <div class="wrap">
+        <h2 id="local-title">本地运行</h2>
+        <p class="section-en" lang="en">Quoted from README, plus filenames the code actually opens</p>
+        <p class="prose">README 原文如下（拼写保持原样）：</p>
+        <pre class="code-block" tabindex="0"><code>1.pip isntall -r requirements.txt
+
+2.pyhton main.py</code></pre>
+        <div class="prose">
+          <p>
+            实际还会读取 <code>weights/ppv3_db.pth</code>、<code>weights/ppv3_rec.pth</code>、
+            <code>weights/ppocr_keys_v1.txt</code>，以及上面的 <code>test/pdf3.png</code> 与 <code>test/3.jpg</code>。
+            静态站没有发布这些权重。
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>静态走查页。源码与权重仍以 <a href="https://github.com/UnstoppableCurry/ContractComparison">GitHub 仓库</a> 为准。</p>
+      <p>预定发布地址：<a href="https://unstoppablecurry.github.io/ContractComparison/">https://unstoppablecurry.github.io/ContractComparison/</a></p>
+      <nav class="footer-links" aria-label="页脚链接">
+        <a href="./">首页</a>
+        <a href="#inputs">输入样例</a>
+        <a href="#results">生成结果</a>
+        <a href="https://github.com/UnstoppableCurry/ContractComparison/blob/main/README.md">README</a>
+        <a href="https://github.com/UnstoppableCurry/ContractComparison/blob/main/main.py">main.py</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

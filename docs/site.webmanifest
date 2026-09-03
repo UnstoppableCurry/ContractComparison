@@ -1,0 +1,19 @@
+{
+  "name": "合同比对 · OCR 结果展示",
+  "short_name": "合同比对",
+  "description": "ContractComparison 的静态走查页：根据仓库 README、源码与已核验素材说明问题、管线、可见结果与限制。无法在浏览器中运行 OCR。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3eee4",
+  "theme_color": "#1c1612",
+  "icons": [
+    {
+      "src": "assets/brand/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
