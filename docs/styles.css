@@ -74,6 +74,7 @@ img {
 a {
   color: var(--seal-deep);
   text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
 }
 
 a:hover {
@@ -367,9 +368,18 @@ a:hover {
   color: var(--ink-soft);
 }
 
+.card,
+.step,
+.limit,
+.figure-card,
+.prose {
+  min-width: 0;
+}
+
 code,
 pre {
   font-family: var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 code {
